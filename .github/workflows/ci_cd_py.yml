@@ -1,0 +1,29 @@
+name: CI/CD py
+
+
+on:
+  push:
+    paths:
+      - '**.py'
+      - '.github/workflows/ci_cd_py.yml'
+  pull_request:
+    paths:
+      - '**.py'
+      - '.github/workflows/ci_cd_py.yml'
+
+jobs:
+  flake8-lint:
+    name: Lint with flake8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"          
+      - name: Install dependencies
+        run: pip install flake8
+      - name: Run flake8
+        run: flake8 --ignore=W291 .
+
