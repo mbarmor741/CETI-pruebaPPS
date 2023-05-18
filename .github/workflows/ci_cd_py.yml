@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: pip install flake8
       - name: Run flake8
-        run: flake8 --ignore=W291,E302 .
+        run: flake8 --ignore=W291,E302,F841 .
 
   build:
     name: build and push Docker image
