@@ -13,7 +13,7 @@ for x in lista:
 db.session.commit() 
 
 
-# devuelve la consulta si existe 
+# devuelve la consulta si existeee
 def student_check(student_id):
     res = db.session.query(Student).get(student_id)
     if not res:
