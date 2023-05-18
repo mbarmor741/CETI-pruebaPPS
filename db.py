@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# ruta relativa y nombre de la BD
+# ruta relativa y nombre de la BDDD
 engine = create_engine('sqlite:///students.db')
 
 Session = sessionmaker(bind=engine)
