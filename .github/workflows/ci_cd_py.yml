@@ -25,4 +25,48 @@ jobs:
       - name: Install dependencies
         run: pip install flake8
       - name: Run flake8
-        run: flake8 --ignore=W291 .
+        run: flake8 --ignore=W291,E302 .
+
+  build:
+    name: build and push Docker image
+    needs: flake8-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+          
+      - name: Login to DockerHub
+        uses: docker/login-action@v2 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true 
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-ceti:latest
+      # - name: Sleep for 60 seconds
+      #   run: sleep 60s
+      #   shell: bash
+  aws:
+    name: Deploy image to aws
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: multiple command
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.AWS_HOSTNAME }}
+        username: ${{ secrets.AWS_USERNAME }}
+        key: ${{ secrets.AWS_PRIVATE_KEY }}
+        port: 22  # ${{ secrets.PORT }}
+        script: |
+            sleep 30
+            docker stop web && docker rm web
+            docker rmi mbarmor741/fastapi-ceti
+            docker run -d -p 80:8000 --name web mbarmor741/fastapi-ceti
+            sleep 30
+
+
+
